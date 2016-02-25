@@ -1,0 +1,8 @@
+node_modules
+
+# Ignore clips and video content, except for samples
+public/clips/*
+!public/clips/shepherd.ogg
+
+public/processing/*
+!public/processing/cubes.pde

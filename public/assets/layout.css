@@ -1,0 +1,18 @@
+@import url(http://yui.yahooapis.com/3.18.1/build/cssreset/cssreset-min.css);
+
+html {
+  width: 100%;
+  height: 100%;
+  background: black;
+}
+
+canvas, video {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+
+  width: 100%;
+  height: 100%;
+
+  display: none;
+}

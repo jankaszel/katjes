@@ -1,0 +1,20 @@
+{
+  "name": "katjes",
+  "version": "0.1.0",
+  "description": "jes jes jes jes",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "jk",
+  "private": true,
+  "main": "./app.js",
+  "bin": {
+    "katjes": "./bin/katjes.js"
+  },
+  "dependencies": {
+    "express": "^4.13.3",
+    "socket.io": "^1.3.7",
+    "socket.io-client": "^1.3.7"
+  },
+  "license": "MIT"
+}
