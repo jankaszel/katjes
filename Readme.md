@@ -17,3 +17,7 @@ There are sample files included in `public/clips` and `public/processing`.
 ### Upcoming
 
 * `queue`: Create playlists beforehand or on the fly with track durations, similarly to an audio player.
+* Refactor client code. Use modules, maybe ES6.
+* Make the server a client itself, too.
+
+:cat:
