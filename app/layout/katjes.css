@@ -1,4 +1,4 @@
-@import url(http://yui.yahooapis.com/3.18.1/build/cssreset/cssreset-min.css);
+@import "~normalize.css";
 
 html {
   width: 100%;

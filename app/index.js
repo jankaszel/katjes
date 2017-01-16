@@ -5,6 +5,9 @@ const async = require('async');
 const io = require('socket.io-client');
 const TimedQueue = require('./util/TimedQueue');
 
+require('./layout/katjes.css');
+
+
 function $(q) {
   var ret = Array.prototype.slice.call(
     document.querySelectorAll(q), 0);

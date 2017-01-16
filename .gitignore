@@ -1,7 +1,6 @@
 node_modules
 
-public/assets/*.js
-public/assets/*.js.map
+public/assets
 
 # Ignore clips and video content, except for samples
 public/clips/*

@@ -11,7 +11,7 @@ const bundle = {
   output: {
     path: `${__dirname}/public/assets`,
     publicPath: '/assets/',
-    filename: debug ? 'app.js' : 'app.[hash].js'
+    filename: 'app.js'
   },
 
   module: {
@@ -19,6 +19,9 @@ const bundle = {
       test: /\.jsx?$/,
       use: 'babel-loader',
       exclude: /node_modules/
+    }, {
+      test: /\.html$/,
+      use: 'html-loader'
     }, {
       test: /\.css$/,
       use: ['style-loader', 'css-loader']
