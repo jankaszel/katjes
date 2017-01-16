@@ -22,10 +22,13 @@ There are sample files included in `public/clips` and `public/processing`.
 
 ### Upcoming
 
-* [ ] Refactor client code. Use modules, maybe ES6.
+* [ ] Refactor client code (modularize 📦)
 * [ ] `queue`: Create playlists beforehand or on the fly with track durations,
   similarly to an audio player.
 * [ ] Make the server a client itself, too.
+* [ ] Web UI
 * [ ] Fluid transitions between items.
+* [ ] Plugin interface for external interactions with sketches (parameters),
+  like via MIDI, WebSockets, or IPC. Provide better sample code.
 
-:cat:
+🐱
