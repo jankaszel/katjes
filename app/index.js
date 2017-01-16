@@ -1,73 +1,15 @@
 require('processing-js');
+require('whatwg-fetch');
+
 const async = require('async');
 const io = require('socket.io-client');
-
-function TimedQueue(items, callback) {
-  this.items = [];
-  this.timeout = null;
-  this.callback = callback;
-
-  if (typeof items !== 'undefined') {
-    items.forEach(this.push);
-  }
-}
-
-TimedQueue.prototype.push = function (item, delay) {
-  if (this.items.length === 1) {
-    this._setupTimer();
-  }
-
-  this.items.push(item);
-}
-
-TimedQueue.prototype.shift = function () {
-  return this.items.shift();
-}
-
-TimedQueue.prototype._setupTimer = function () {
-  if (this.items.length > 0) {
-    this.timeout = window.setTimeout(function () {
-      var item = this.shift();
-
-      self.callback(item);
-      this._setupTimer();
-    }.bind(this));
-  } else {
-    this.timeout = null;
-  }
-}
-
-TimedQueue.prototype.resetTimer = function () {
-  window.clearTimeout(this.timeout);
-  this._setupTimer();
-}
-
-TimedQueue.prototype.isScheduled = function () {
-  return this.timeout !== null;
-}
+const TimedQueue = require('./util/TimedQueue');
 
 function $(q) {
   var ret = Array.prototype.slice.call(
     document.querySelectorAll(q), 0);
 
   return ret;
-}
-
-function ajax(url, callback) {
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', url, true);
-
-  xhr.onreadystatechange = function(e) {
-    if (this.readyState == 4) {
-      if (this.status == 200) {
-        callback(null, xhr.responseText);
-      } else {
-        callback(this.status);
-      }
-    }
-  };
-
-  xhr.send();
 }
 
 function basename(path) {
@@ -114,64 +56,54 @@ var sketches = {},
 
 queue = new TimedQueue([], load_element);
 
-function flush(callback) {
-  async.waterfall([
-    function (callback) {
-      ajax('/sketches.json', function (err, text) {
-        if (err) {
-          console.error('error retrieving /sketches.json: %s', err);
-          callback(err);
-        } else {
-          var data = JSON.parse(text);
-          callback(null, data);
-        }
-      });
-    },
+async function fetchJSON(url) {
+  const response = await fetch(url);
 
-    function (files, callback) {
-      async.eachSeries(files, function (file, callback) {
-        console.log('loading \'%s\'', file);
-        ajax(file, function (err, text) {
-          if (err) {
-            console.error('error retrieving %s: %s', file, err);
-            callback(err);
-          } else {
-            var id = basename(file);
+  if (!response.ok) {
+    throw new Error(`error retrieving ${url}: ${response.status}`);
+  } else {
+    return await response.json();
+  }
+}
 
-            sketches[id] = text;
-            callback();
-          }
-        })
-      }, function (err) {
-        callback(err);
-      });
-    },
+function fetchSketches() {
+  return fetchJSON('/sketches.json');
+}
 
-    function (callback) {
-      ajax('/clips.json', function (err, text) {
-        if (err) {
-          console.error('error retrieving /clips.json: %s', err);
-          callback(err);
-        } else {
-          var files = JSON.parse(text), id;
-
-          files.forEach(function (file) {
-            id = basename(file);
-            clips[id] = file;
-          });
-
-          console.log('retrieved clips');
-          callback();
-        }
-      });
+function fetchSketchData(sketchFile) {
+  return fetch(sketchFile).then(response => {
+    if (!response.ok) {
+      throw new Error(`Error fetching ${sketchFile}`);
+    } else {
+      return response.text();
     }
-  ], function (err) {
-    if (typeof callback === 'function') {
-      callback(err);
-    }
+  }).then(sketchText => {
+    const id = basename(sketchFile);
+    sketches[id] = sketchText;
   });
 }
 
+function fetchSketchesData(sketches) {
+  const promises = sketches.map(fetchSketchData);
+  return Promise.all(promises);
+}
+
+function fetchClips() {
+  return fetchJSON('/clips.json').then(clipFiles => { console.log(clipFiles)
+    clipFiles.forEach(clipFile => {
+      const id = basename(clipFile);
+      clips[id] = clipFile;
+    });
+
+    console.log('retrieved clips');
+  });
+}
+
+function flush() {
+  const sketchesPromise = fetchSketches().then(fetchSketchesData);
+  
+  return Promise.all([fetchClips(), sketchesPromise]);
+}
 
 function load_element(id) {
   console.log(state.mode);
@@ -215,7 +147,7 @@ function load_element(id) {
     $video.src = '';
   }
 
-  $oldCanvas = $canvas;
+  let $oldCanvas = $canvas;
   $canvas = makecanvas($oldCanvas);
 
   instance = new Processing($canvas, sketches[id]);
@@ -264,16 +196,14 @@ window.addEventListener('load', function () {
 
   var socket = io();
 
-  flush(function (err) {
-    if (err) {
-      console.error('error while flushing: %s', err);
-    } else {
-      console.log('flushed');
+  flush().then(() => {
+    console.log('flushed');
 
-      socket.emit('handshake', {
-        identity: 'web'
-      });
-    }
+    socket.emit('handshake', {
+      identity: 'web'
+    });
+  }).catch(err => {
+    console.error('error while flushing:', err);
   });
 
   console.log('performing handshake');

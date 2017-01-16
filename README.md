@@ -26,5 +26,6 @@ There are sample files included in `public/clips` and `public/processing`.
 * [ ] `queue`: Create playlists beforehand or on the fly with track durations,
   similarly to an audio player.
 * [ ] Make the server a client itself, too.
+* [ ] Fluid transitions between items.
 
 :cat:

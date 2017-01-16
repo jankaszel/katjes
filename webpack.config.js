@@ -1,48 +1,25 @@
 const webpack = require('webpack');
 
 const debug = process.env.NODE_ENV !== 'production';
-const filename = !debug ? '[name].[hash].js' : '[name].js';
-
-const entry = {
-  app: `${__dirname}/app/index.js`
-};
-
-if (debug) {
-  entry.app = new Array(
-    'webpack/hot/only-dev-server',
-    entry.app
-  );
-}
-
-const devServer = {
-  contentBase: `${__dirname}/public`,
-  host: '0.0.0.0',
-  inline: true,
-  noInfo: true,
-  quiet: false,
-  stats: {
-    colors: true
-  }
-};
 
 const bundle = {
   name: 'bundle',
-  entry,
+  entry: ['babel-regenerator-runtime', `${__dirname}/app/index.js`],
 
   devtool: process.env.WEBPACK_DEVTOOL || 'source-map',
 
   output: {
     path: `${__dirname}/public/assets`,
     publicPath: '/assets/',
-    filename
+    filename: debug ? 'app.js' : 'app.[hash].js'
   },
 
   module: {
-    rules: [/* {
+    rules: [{
       test: /\.jsx?$/,
       use: 'babel-loader',
       exclude: /node_modules/
-    }, */{
+    }, {
       test: /\.css$/,
       use: ['style-loader', 'css-loader']
     }, {
@@ -69,7 +46,16 @@ const bundle = {
     }]
   },
 
-  devServer,
+  devServer: {
+    contentBase: `${__dirname}/public`,
+    host: '0.0.0.0',
+    inline: true,
+    noInfo: true,
+    quiet: false,
+    stats: {
+      colors: true
+    }
+  },
 
   plugins: [
     new webpack.LoaderOptionsPlugin({
