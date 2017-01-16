@@ -1,3 +1,7 @@
+require('processing-js');
+const async = require('async');
+const io = require('socket.io-client');
+
 function TimedQueue(items, callback) {
   this.items = [];
   this.timeout = null;

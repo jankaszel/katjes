@@ -1,16 +1,29 @@
 'use strict';
 
-var fs = require('fs'),
+const fs = require('fs'),
   path = require('path'),
   express = require('express'),
   http = require('http'),
   socket_io = require('socket.io');
+
+const DEBUG = process.env.NODE_ENV !== "production";
 
 var app = express(),
   server = http.createServer(app),
   io = socket_io(server);
 
 app.use(express.static(__dirname + '/public'));
+
+if (DEBUG) {
+  const webpack = require("webpack");
+  const webpackMiddleware = require("webpack-dev-middleware");
+  const webpackConfig = require("./webpack.config");
+
+  const compiler = webpack(webpackConfig);
+  const {publicPath} = webpackConfig.output;
+
+  app.use(webpackMiddleware(compiler, {publicPath}));
+}
 
 function getfiles(dir, extension, callback) {
   if (arguments.length === 2) {
