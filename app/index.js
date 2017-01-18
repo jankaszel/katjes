@@ -1,31 +1,19 @@
-require('processing-js');
+/* global Processing */
 require('whatwg-fetch');
+require('processing-js');
 
-const async = require('async');
 const io = require('socket.io-client');
 const TimedQueue = require('./util/TimedQueue');
+const {$} = require('./util/dom');
 
 require('./layout/katjes.css');
 
-
-function $(q) {
-  var ret = Array.prototype.slice.call(
-    document.querySelectorAll(q), 0);
-
-  return ret;
-}
 
 function basename(path) {
   var elements = path.split('/'),
     name = elements[elements.length-1].split('.');
 
   return name[0];
-}
-
-function ext(path) {
-  var ext = path.split('.');
-
-  return ext[ext.length-1];
 }
 
 function makeid() {
@@ -39,12 +27,6 @@ function makecanvas($oldCanvas) {
   $oldCanvas.parentNode.insertBefore($canvas, $oldCanvas);
   return $canvas;
 }
-
-var types = {
-  'webm': 'video/webm',
-  'ogg': 'video/ogg',
-  'mp4': 'video/mp4'
-};
 
 var sketches = {},
   clips = {},

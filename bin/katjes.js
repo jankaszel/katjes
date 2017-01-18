@@ -78,16 +78,17 @@ rl.on('SIGINT', function () {
 function request() {
   rl.question('> ', function (input) {
     console.dir(input);
-    var input = input.split(' ');
-    var cmd = input[0];
+
+    const fragments = input.split(' ');
+    var cmd = fragments[0];
 
     switch (cmd) {
       case 'load':
-        input.splice(0, 1);
+        fragments.splice(0, 1);
 
         socket.emit('cmd', {
           cmd: 'load',
-          options: input.join(' ')
+          options: fragments.join(' ')
         });
         break;
 

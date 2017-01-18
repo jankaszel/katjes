@@ -1,7 +1,5 @@
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
 const express = require('express');
 const http = require('http');
 const socket_io = require('socket.io');
