@@ -1,23 +1,22 @@
 'use strict';
 
-const fs = require('fs'),
-  path = require('path'),
-  express = require('express'),
-  http = require('http'),
-  socket_io = require('socket.io');
+const fs = require('fs');
+const path = require('path');
+const express = require('express');
+const http = require('http');
+const socket_io = require('socket.io');
+const findFiles = require('./util/findFiles');
 
-const DEBUG = process.env.NODE_ENV !== "production";
-
-var app = express(),
+const app = express(),
   server = http.createServer(app),
   io = socket_io(server);
 
 app.use(express.static(__dirname + '/public'));
 
-if (DEBUG) {
-  const webpack = require("webpack");
-  const webpackMiddleware = require("webpack-dev-middleware");
-  const webpackConfig = require("./webpack.config");
+if (process.env.NODE_ENV !== 'production') {
+  const webpack = require('webpack');
+  const webpackMiddleware = require('webpack-dev-middleware');
+  const webpackConfig = require('./webpack.config');
 
   const compiler = webpack(webpackConfig);
   const {publicPath} = webpackConfig.output;
@@ -25,64 +24,27 @@ if (DEBUG) {
   app.use(webpackMiddleware(compiler, {publicPath}));
 }
 
-function getfiles(dir, extension, callback) {
-  if (arguments.length === 2) {
-    callback = extension;
-    extension = '*';
-  }
-
-  fs.readdir(dir, function (err, files) {
-    if (err) {
-      callback(err);
-      res.status(500).send(JSON.stringify([]));
-      console.error('error when serving \'sketches.json\': %s', err);
-    } else {
-      files = files.filter(function (file) {
-        var p = path.join(dir, file),
-          stats = fs.lstatSync(p),
-          parsed = path.parse(p);
-
-        return !stats.isDirectory() && (extension === '*' || parsed.ext === '.pde');
-      });
-
-      callback(null, files);
-    }
-  });
-}
-
-app.get('/sketches.json', function (req, res) {
-  var dir = __dirname + '/public/processing/'
-
-  getfiles(dir, '.js', function (err, files) {
-    if (err) {
-      res.status(500).send(JSON.stringify([]));
-      console.error('error when serving \'sketches.json\': %s', err);
-    } else {
-      res.status(200).send(files.map(function (file) {
-        return '/processing/' + file;
-      }));
-    }
+app.get('/sketches.json', (req, res) => {
+  findFiles(/\.pde$/, `${__dirname}/public/processing/`).then(files => {
+    res.send(files.map(file => `/processing/${file}`));
+  }).catch(err => {
+    res.status(500).send(JSON.stringify(new Array));
+    console.error('error when serving \'sketches.json\':', err);
   });
 });
 
-app.get('/clips.json', function (req, res) {
-  var dir = __dirname + '/public/clips/'
-
-  getfiles(dir, function (err, files) {
-    if (err) {
-      res.status(500).send(JSON.stringify([]));
-      console.error('error when serving \'clips.json\': %s', err);
-    } else {
-      res.status(200).send(files.map(function (file) {
-        return '/clips/' + file;
-      }));
-    }
+app.get('/clips.json', (req, res) => {
+  findFiles(`${__dirname}/public/clips/`).then(files => {
+    res.send(files.map(file => `/clips/${file}`));
+  }).catch(err => {
+    res.status(500).send(JSON.stringify(new Array));
+    console.error('error when serving \'clips.json\':', err);
   });
 });
 
-server.listen(3000, function () {
+server.listen(3000, () => {
   var port = server.address().port;
-  console.log('app listening at port %d', port);
+  console.log('katjes listening at port %d', port);
 });
 
 var webs = [],
