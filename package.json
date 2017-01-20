@@ -1,12 +1,12 @@
 {
   "name": "katjes",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "jes jes jes jes",
   "scripts": {
     "dev": "node .",
     "build": "NODE_ENV=production webpack --progress",
     "lint": "eslint --ignore-path .gitignore .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test/"
   },
   "author": "Jan Kaßel <58153@outlook.com>",
   "private": true,
@@ -24,7 +24,7 @@
     "whatwg-fetch": "^2.0.1"
   },
   "engines": {
-    "node": ">=6.9.2"
+    "node": ">=6.9.4"
   },
   "license": "MIT",
   "devDependencies": {

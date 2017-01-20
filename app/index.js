@@ -55,17 +55,15 @@ function fetchSketches() {
   return fetchJSON('/sketches.json');
 }
 
-function fetchSketchData(sketchFile) {
-  return fetch(sketchFile).then(response => {
-    if (!response.ok) {
-      throw new Error(`Error fetching ${sketchFile}`);
-    } else {
-      return response.text();
-    }
-  }).then(sketchText => {
-    const id = basename(sketchFile);
-    sketches[id] = sketchText;
-  });
+async function fetchSketchData(sketchFile) {
+  const response = await fetch(sketchFile);
+  if (!response.ok) {
+    throw new Error(`Error fetching ${sketchFile}`);
+  }
+  
+  const sketchText = await response.text();
+  const id = basename(sketchFile);
+  sketches[id] = sketchText;
 }
 
 function fetchSketchesData(sketches) {
@@ -73,19 +71,18 @@ function fetchSketchesData(sketches) {
   return Promise.all(promises);
 }
 
-function fetchClips() {
-  return fetchJSON('/clips.json').then(clipFiles => { console.log(clipFiles)
-    clipFiles.forEach(clipFile => {
-      const id = basename(clipFile);
-      clips[id] = clipFile;
-    });
+async function fetchClips() {
+  const clipFiles = await fetchJSON('/clips.json');
 
-    console.log('retrieved clips');
+  clipFiles.forEach(clipFile => {
+    const id = basename(clipFile);
+    clips[id] = clipFile;
   });
 }
 
 function flush() {
-  const sketchesPromise = fetchSketches().then(fetchSketchesData);
+  const sketchesPromise = fetchSketches()
+    .then(fetchSketchesData);
   
   return Promise.all([fetchClips(), sketchesPromise]);
 }
