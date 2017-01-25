@@ -1,5 +1,7 @@
 # katjes
 
+[![Travis](https://travis-ci.org/fallafeljan/katjes.svg)]()
+
 Install via `npm install`. Start server via `node .`. Link to cli-client via
 `npm link` and control server via `katjes` from anywhere, even a different
 machine. Visuals are served via HTTP.
@@ -26,9 +28,10 @@ There are sample files included in `public/clips` and `public/processing`.
 * [ ] `queue`: Create playlists beforehand or on the fly with track durations,
   similarly to an audio player.
 * [ ] Make the server a client itself, too.
-* [ ] Web UI
+* [ ] Web UI (for configuration?)
 * [ ] Fluid transitions between items.
 * [ ] Plugin interface for external interactions with sketches (parameters),
   like via MIDI, WebSockets, or IPC. Provide better sample code.
+* [ ] WebSocket interface for *Things*, like Arduino- or Pi-powered devices
 
 🐱
