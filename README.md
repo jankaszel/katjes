@@ -2,6 +2,17 @@
 
 [![Travis](https://travis-ci.org/fallafeljan/katjes.svg)]()
 
+`katjes` is a system for displaying visual content, intenden to be accompanied
+by audio. It's based on web technologies and is open source, therefore
+hackeable. Visual content can be interactive sketches
+([Processing](https://processing.org/)) and video clips.
+
+The system consists of a central server, independent visualizers (slaves), and
+clients who influence the visuals. All these actors communicate with the server
+via [WebSockets](https://tools.ietf.org/html/rfc6455).
+
+## Setup
+
 Install via `npm install`. Start server via `node .`. Link to cli-client via
 `npm link` and control server via `katjes` from anywhere, even a different
 machine. Visuals are served via HTTP.
@@ -12,7 +23,7 @@ machine. Visuals are served via HTTP.
 There are sample files included in `public/clips` and `public/processing`.
 
 
-## CLI Commands
+## REPL Commands
 
 * `load`: Load a new processing visual or a new movie clip. Emit file extension.
 * `pause`, `stop`: Might do the same: Just stop any animation or movie clip.
@@ -20,18 +31,5 @@ There are sample files included in `public/clips` and `public/processing`.
 * `flush`: Check for new processing visuals or movie clips (the folders are
   scanned at startup)
 * `exit`, `quit`: Close connection to server.
-
-
-### Upcoming
-
-* [ ] Refactor client code (modularize 📦)
-* [ ] `queue`: Create playlists beforehand or on the fly with track durations,
-  similarly to an audio player.
-* [ ] Make the server a client itself, too.
-* [ ] Web UI (for configuration?)
-* [ ] Fluid transitions between items.
-* [ ] Plugin interface for external interactions with sketches (parameters),
-  like via MIDI, WebSockets, or IPC. Provide better sample code.
-* [ ] WebSocket interface for *Things*, like Arduino- or Pi-powered devices
 
 🐱
