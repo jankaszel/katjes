@@ -2,10 +2,9 @@
 
 [![Travis](https://travis-ci.org/fallafeljan/katjes.svg)]()
 
-`katjes` is a system for displaying visual content, intenden to be accompanied
-by audio. It's based on web technologies and is open source, therefore
-hackeable. Visual content can be interactive sketches
-([Processing](https://processing.org/)) and video clips.
+`katjes` is a system for displaying visual content, intended to be accompanied
+by audio. It's based on web technologies. Visual content can be interactive
+sketches ([Processing](https://processing.org/)) and video clips.
 
 The system consists of a central server, independent visualizers (slaves), and
 clients who influence the visuals. All these actors communicate with the server
