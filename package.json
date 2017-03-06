@@ -35,6 +35,7 @@
     "babel-regenerator-runtime": "^6.5.0",
     "css-loader": "^0.26.1",
     "eslint": "^3.13.1",
+    "screenfull": "^3.0.2",
     "style-loader": "^0.13.1",
     "webpack": "^2.2.0",
     "webpack-dev-middleware": "^1.9.0"

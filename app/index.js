@@ -2,6 +2,7 @@
 require('whatwg-fetch');
 require('processing-js');
 
+const screenfull = require('screenfull');
 const io = require('socket.io-client');
 const TimedQueue = require('./util/TimedQueue');
 const {$} = require('./util/dom');
@@ -157,18 +158,20 @@ function stop() {
   }
 }
 
-
 window.addEventListener('load', function () {
   console.log('load');
 
   var $body = document.getElementsByTagName('body')[0];
   $body.addEventListener('keydown', function (evt) {
     if (evt.key === ' ') {
-      var isFullScreen = document.mozFullScreen;
-      if (!isFullScreen) {
-        $body.mozRequestFullScreen();
+      if (!screenfull.enabled) {
+        return;
+      }
+
+      if (!screenfull.isFullscreen) {
+        screenfull.request();
       } else {
-        document.mozCancelFullScreen();
+        screenfull.exit();
       }
     }
   });
